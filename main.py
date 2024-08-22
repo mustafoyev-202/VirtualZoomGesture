@@ -6,10 +6,6 @@ cap = cv2.VideoCapture(0)
 cap.set(3, 1280)  # Width of the webcam
 cap.set(4, 720)  # Height of the webcam
 
-# Initialize video writer to save the output video
-fourcc = cv2.VideoWriter_fourcc(*'XVID')  # Codec for saving the video
-out = cv2.VideoWriter('output.avi', fourcc, 20.0, (1280, 720))
-
 # Initialize hand detector
 detector = HandDetector(detectionCon=0.7)
 startDist = None
@@ -26,7 +22,7 @@ while True:
         break
 
     hands, img = detector.findHands(img)
-    img1 = cv2.imread("sample.jpg")
+    img1 = cv2.imread("sample.jpg")  # Load your image here
 
     if len(hands) == 2:
         if detector.fingersUp(hands[0]) == [1, 1, 0, 0, 0] and \
@@ -73,19 +69,16 @@ while True:
         cx = max(newW // 2, min(cx, img.shape[1] - newW // 2))
         cy = max(newH // 2, min(cy, img.shape[0] - newH // 2))
 
+        # Place the resized image at the new location
         img[cy - newH // 2:cy + newH // 2, cx - newW // 2:cx + newW // 2] = img1
     except:
         pass
 
-    # Write the frame to the video file
-    out.write(img)
-
     # Display the video feed
-    cv2.imshow("Image", img)
+    cv2.imshow("Drag and Drop Image", img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Release the video writer and capture objects
+# Release the capture object and close all windows
 cap.release()
-out.release()
 cv2.destroyAllWindows()
